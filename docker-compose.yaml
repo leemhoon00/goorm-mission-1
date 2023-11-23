@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: leemhoon00/goorm-mission-1:v4
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres?schema=public
+    ports:
+      - 80:3000
+    depends_on:
+      - postgres
