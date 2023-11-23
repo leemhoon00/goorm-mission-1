@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   postgres:
-    image: postgres
+    image: postgres:alpine
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
@@ -10,16 +10,25 @@ services:
     ports:
       - 5432:5432
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - postgres:/var/lib/postgresql/data
 
   web:
-    image: leemhoon00/goorm-mission-1:v4
+    image: leemhoon00/goorm-mission-1:v5
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres?schema=public
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: postgres
+      DB_PORT: 5432
     ports:
       - 80:3000
     depends_on:
       - postgres
+
+volumes:
+  postgres:
