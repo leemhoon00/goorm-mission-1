@@ -1,5 +1,6 @@
-import { Controller, Get, Render, Post, HttpCode } from '@nestjs/common';
+import { Controller, Get, Render, Post, HttpCode, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
+import type { CreateUserDto } from './users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -12,7 +13,13 @@ export class UsersController {
 
   @Post()
   @HttpCode(201)
-  async create(): Promise<void> {
-    
+  async create(@Body() user: CreateUserDto): Promise<void> {
+    return this.usersService.create(user);
+  }
+
+  @Get('/list')
+  @Render('list')
+  async list(): Promise<void> {
+    const users = await this.usersService.findAll();
   }
 }
